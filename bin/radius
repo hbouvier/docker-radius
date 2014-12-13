@@ -1,0 +1,19 @@
+#!/bin/sh
+sed -i "s/allow_vulnerable_openssl.*/allow_vulnerable_openssl = yes/" /etc/freeradius/radiusd.conf
+sed -i -e "/client localhost/i client 0.0.0.0/0{\n\tsecret = $primary_shared_secret\n}" \
+  -e "/client localhost/i client ipv6{\n\tipv6addr = ::\n\tsecret = $primary_shared_secret\n}" \
+  -e "s/testing123/$primary_shared_secret/" /etc/freeradius/clients.conf
+
+sed -i "/driver =.*/ a\ \n\tsqlite {\n\t\tfilename = \"/opt/db/radius.sqlite3\"\n\t}" /etc/freeradius/mods-available/sql
+sed -i -e "s/driver =.*/driver = \"rlm_sql_sqlite\"/" -e "s/dialect =.*/dialect = \"sqlite\"/" /etc/freeradius/mods-available/sql
+ln -s /etc/freeradius/mods-available/sql /etc/freeradius/mods-enabled/sql
+sed -i '0,/md5/{s/md5/mschapv2/}' /etc/freeradius/mods-available/eap
+
+echo "${TIMEZONE-America/Montreal}" > /etc/timezone
+dpkg-reconfigure -f noninteractive tzdata
+
+if [ "$DEBUG" = "" ] ; then
+	/usr/sbin/freeradius -f
+else
+	/usr/sbin/freeradius -X
+fi
