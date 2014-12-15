@@ -16,11 +16,11 @@ INSERT INTO radcheck VALUES('1', 'test', 'Cleartext-Password', ':=', 'secret');
 
 ## Start the container
 ```bash
-$ docker run --name radius -d -e primary_shared_secret=radius_password -e "TIMEZONE=America/Montreal" -p 1812:1812/udp -v `pwd`/db:/opt/db -v `pwd`/certs:/etc/freeradius/certs hbouvier/radius
+$ docker run --name radius -d -e primary_shared_secret=radius_password -e cert_password=whatever -e "TIMEZONE=America/Montreal" -p 1812:1812/udp -v `pwd`/db:/opt/db -v `pwd`/certs:/etc/freeradius/certs hbouvier/docker-radius
 ```
 
 ## To Debug Radius
 
 ```bash
-$ docker run -ti -e DEBUG=true -e primary_shared_secret=radius_password -e "TIMEZONE=America/Montreal" -p 1812:1812/udp -v `pwd`/db:/opt/db -v `pwd`/certs:/etc/freeradius/certs radius
+$ docker run -ti -e DEBUG=true -e primary_shared_secret=radius_password -e cert_password=whatever -e "TIMEZONE=America/Montreal" -p 1812:1812/udp -v `pwd`/db:/opt/db -v `pwd`/certs:/etc/freeradius/certs hbouvier/docker-radius
 ```

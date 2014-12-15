@@ -8,6 +8,7 @@ sed -i "/driver =.*/ a\ \n\tsqlite {\n\t\tfilename = \"/opt/db/radius.sqlite3\"\
 sed -i -e "s/driver =.*/driver = \"rlm_sql_sqlite\"/" -e "s/dialect =.*/dialect = \"sqlite\"/" /etc/freeradius/mods-available/sql
 ln -s /etc/freeradius/mods-available/sql /etc/freeradius/mods-enabled/sql
 sed -i '0,/md5/{s/md5/mschapv2/}' /etc/freeradius/mods-available/eap
+sed -i "s/whatever/$cert_password/g" /etc/freeradius/mods-available/eap
 
 echo "${TIMEZONE-America/Montreal}" > /etc/timezone
 dpkg-reconfigure -f noninteractive tzdata
